@@ -12,12 +12,6 @@ public class ChatPresenter extends Presenter<ChatPresenter.View> {
     }
 
     @Override
-    public void detachView() {
-        super.detachView();
-
-    }
-
-    @Override
     public void destroy() {
 
     }

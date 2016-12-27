@@ -10,7 +10,7 @@ public class ChatActivity extends MVPBaseActivity<ChatPresenter.View> implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_chat);
         addPresenter(new ChatPresenter(), this);
     }
 }
