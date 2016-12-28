@@ -8,10 +8,14 @@ import java.util.List;
 
 import io.coreflodev.httpcacheexample.common.mvp.Presenter;
 import io.coreflodev.httpcacheexample.common.mvp.PresenterView;
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 
 public class ChatPresenter extends Presenter<ChatPresenter.View> {
 
     private List<ChatMessage> messages;
+
+    private Disposable newMessages;
 
     public ChatPresenter() {
         messages = new ArrayList<>();
@@ -19,23 +23,34 @@ public class ChatPresenter extends Presenter<ChatPresenter.View> {
         messages.add(ChatMessage.create("test2", "My second message", new GregorianCalendar(2016,12,2).getGregorianChange()));
         messages.add(ChatMessage.create("test", "My third message", new GregorianCalendar(2016,12,2).getGregorianChange()));
         messages.add(ChatMessage.create("test4", "My last message", new GregorianCalendar(2016,12,2).getGregorianChange()));
-
     }
 
     @Override
     public void attachView(View view) {
         super.attachView(view);
-        view.setInitialListOfMessage(messages);
+        view.setInitialListOfMessage(new ArrayList<>(messages));
+
+        newMessages = view.getNewMessage().subscribe(message -> {
+            ChatMessage newMessage = ChatMessage.create("test", message, new Date());
+            messages.add(newMessage);
+            if (isViewAttached()) {
+                view.addNewMessage(newMessage);
+            }
+        });
     }
 
     @Override
     public void destroy() {
-
+        if(newMessages != null && !newMessages.isDisposed()) {
+            newMessages.dispose();
+        }
     }
 
     public interface View extends PresenterView {
 
         void setInitialListOfMessage(List<ChatMessage> messages);
+
+        Observable<String> getNewMessage();
 
         void addNewMessage(ChatMessage chatMessage);
     }
