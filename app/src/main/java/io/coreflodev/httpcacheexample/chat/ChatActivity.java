@@ -13,7 +13,6 @@ import butterknife.ButterKnife;
 import io.coreflodev.httpcacheexample.R;
 import io.coreflodev.httpcacheexample.common.mvp.MVPBaseActivity;
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.MainThreadDisposable;
 
 public class ChatActivity extends MVPBaseActivity<ChatPresenter.View> implements ChatPresenter.View {
@@ -32,7 +31,18 @@ public class ChatActivity extends MVPBaseActivity<ChatPresenter.View> implements
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
 
-        rvMessageList.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvMessageList.setLayoutManager(linearLayoutManager);
+        ChatAdapter chatAdapter = new ChatAdapter();
+        rvMessageList.setAdapter(chatAdapter);
+
+        chatAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                linearLayoutManager.scrollToPosition(positionStart);
+            }
+        });
 
         ChatPresenter chatPresenter = new ChatPresenter();
 
@@ -41,7 +51,9 @@ public class ChatActivity extends MVPBaseActivity<ChatPresenter.View> implements
 
     @Override
     public void setInitialListOfMessage(List<ChatMessage> messages) {
-        rvMessageList.setAdapter(new ChatAdapter(messages));
+        if (rvMessageList.getAdapter() != null) {
+            ((ChatAdapter) rvMessageList.getAdapter()).addMessages(messages);
+        }
     }
 
     @Override
@@ -67,7 +79,7 @@ public class ChatActivity extends MVPBaseActivity<ChatPresenter.View> implements
 
     @Override
     public void addNewMessage(ChatMessage chatMessage) {
-        if(rvMessageList.getAdapter() != null) {
+        if (rvMessageList.getAdapter() != null) {
             ChatAdapter chatAdapter = (ChatAdapter) rvMessageList.getAdapter();
             chatAdapter.addMessage(chatMessage);
         }

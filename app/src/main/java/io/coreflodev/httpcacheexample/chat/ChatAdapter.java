@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -14,32 +15,36 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.coreflodev.httpcacheexample.R;
 
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
-
-    private List<ChatMessage> messages;
+public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatMessageViewHolder> {
 
     private static SimpleDateFormat MESSAGE_DATE_FORMAT
             = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss", Locale.getDefault());
+    private List<ChatMessage> messages;
 
-    public ChatAdapter(List<ChatMessage> messages) {
-        this.messages = messages;
+    public ChatAdapter() {
+        this.messages = new ArrayList<>();
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(
+    public ChatMessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ChatMessageViewHolder(
                 LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_chat, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ChatMessageViewHolder holder, int position) {
         holder.setMessage(messages.get(position));
+    }
+
+    public void addMessages(List<ChatMessage> chatMessages) {
+        messages.addAll(chatMessages);
+        notifyItemRangeChanged(messages.size() - chatMessages.size() - 1, chatMessages.size());
     }
 
     public void addMessage(ChatMessage chatMessage) {
         messages.add(chatMessage);
-        notifyItemInserted(messages.size());
+        notifyItemInserted(messages.size() - 1);
     }
 
     @Override
@@ -47,7 +52,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         return messages.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.tv_chat_message_pseudo)
         TextView tvPseudo;
@@ -56,7 +61,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         @BindView(R.id.tv_chat_message_date)
         TextView tvDate;
 
-        public ViewHolder(View itemView) {
+        public ChatMessageViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
