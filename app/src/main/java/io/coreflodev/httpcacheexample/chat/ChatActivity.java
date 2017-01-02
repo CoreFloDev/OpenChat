@@ -9,7 +9,6 @@ import android.widget.ImageButton;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.coreflodev.httpcacheexample.R;
 import io.coreflodev.httpcacheexample.common.mvp.MVPBaseActivity;
 import io.reactivex.Observable;
@@ -29,7 +28,6 @@ public class ChatActivity extends MVPBaseActivity<ChatPresenter.View> implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        ButterKnife.bind(this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvMessageList.setLayoutManager(linearLayoutManager);

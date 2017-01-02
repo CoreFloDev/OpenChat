@@ -1,8 +1,8 @@
 package io.coreflodev.httpcacheexample.common.mvp;
 
-import android.support.v7.app.AppCompatActivity;
+import io.coreflodev.httpcacheexample.common.BaseActivity;
 
-public class MVPBaseActivity<V extends PresenterView> extends AppCompatActivity {
+public class MVPBaseActivity<V extends PresenterView> extends BaseActivity {
 
     private Presenter<V> presenter;
 
@@ -14,7 +14,7 @@ public class MVPBaseActivity<V extends PresenterView> extends AppCompatActivity 
     @Override
     protected void onDestroy() {
         presenter.detachView();
-        if(isFinishing()) {
+        if (isFinishing()) {
             presenter.destroy();
         }
         super.onDestroy();
