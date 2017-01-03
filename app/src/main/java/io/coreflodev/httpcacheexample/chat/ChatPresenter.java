@@ -46,13 +46,16 @@ public class ChatPresenter extends Presenter<ChatPresenter.View> {
                     }
                 });
 
-        newMessages = view.getNewMessage().subscribe(message -> {
-            ChatMessage newMessage = ChatMessage.create("test", message, new Date());
-            messages.add(newMessage);
-            if (isViewAttached()) {
-                view.addNewMessage(newMessage);
-            }
-        });
+        newMessages = view.getNewMessage()
+                .flatMap(message -> chatService.addMessage(ChatMessage.create("test", message, new Date()))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()))
+                .subscribe(newMessage -> {
+                    messages.add(newMessage);
+                    if (isViewAttached()) {
+                        view.addNewMessage(newMessage);
+                    }
+                });
     }
 
     @Override
