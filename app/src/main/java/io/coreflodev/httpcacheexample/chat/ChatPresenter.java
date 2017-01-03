@@ -1,11 +1,12 @@
 package io.coreflodev.httpcacheexample.chat;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import io.coreflodev.httpcacheexample.api.ChatMessage;
+import io.coreflodev.httpcacheexample.api.ChatService;
 import io.coreflodev.httpcacheexample.common.mvp.Presenter;
 import io.coreflodev.httpcacheexample.common.mvp.PresenterView;
 import io.reactivex.Observable;
@@ -17,7 +18,10 @@ public class ChatPresenter extends Presenter<ChatPresenter.View> {
 
     private Disposable newMessages;
 
-    public ChatPresenter() {
+    private ChatService chatService;
+
+    public ChatPresenter(ChatService chatService) {
+        this.chatService = chatService;
         messages = new ArrayList<>();
         messages.add(ChatMessage.create("test", "My first message", new GregorianCalendar(2016,12,2).getGregorianChange()));
         messages.add(ChatMessage.create("test2", "My second message", new GregorianCalendar(2016,12,2).getGregorianChange()));

@@ -12,7 +12,10 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import io.coreflodev.httpcacheexample.R;
+import io.coreflodev.httpcacheexample.api.ChatMessage;
+import io.coreflodev.httpcacheexample.chat.dagger.ChatModule;
 import io.coreflodev.httpcacheexample.chat.dagger.DaggerChatComponent;
+import io.coreflodev.httpcacheexample.common.dagger.DaggerApplicationComponent;
 import io.coreflodev.httpcacheexample.common.mvp.MVPBaseActivity;
 import io.reactivex.Observable;
 import io.reactivex.android.MainThreadDisposable;
@@ -52,7 +55,10 @@ public class ChatActivity extends MVPBaseActivity<ChatPresenter.View> implements
     }
 
     private void initDagger() {
-        DaggerChatComponent.create().inject(this);
+        DaggerChatComponent.builder().applicationComponent(DaggerApplicationComponent.create())
+                .chatModule(new ChatModule())
+                .build()
+                .inject(this);
     }
 
     @Override

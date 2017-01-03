@@ -1,4 +1,4 @@
-package io.coreflodev.httpcacheexample.chat;
+package io.coreflodev.httpcacheexample.api;
 
 import android.support.annotation.NonNull;
 

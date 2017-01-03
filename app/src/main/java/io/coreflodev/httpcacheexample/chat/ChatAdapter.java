@@ -14,6 +14,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.coreflodev.httpcacheexample.R;
+import io.coreflodev.httpcacheexample.api.ChatMessage;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatMessageViewHolder> {
 
