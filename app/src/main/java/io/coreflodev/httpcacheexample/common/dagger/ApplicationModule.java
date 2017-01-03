@@ -3,7 +3,7 @@ package io.coreflodev.httpcacheexample.common.dagger;
 import dagger.Module;
 import dagger.Provides;
 import io.coreflodev.httpcacheexample.api.ChatService;
-import io.coreflodev.httpcacheexample.common.service.NetworkService;
+import io.coreflodev.httpcacheexample.common.network.NetworkService;
 
 @Module
 public class ApplicationModule {

@@ -1,21 +1,21 @@
-package io.coreflodev.httpcacheexample.common.service;
+package io.coreflodev.httpcacheexample.common.network;
 
 import com.google.gson.GsonBuilder;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import com.ryanharter.auto.value.gson.AutoValueGsonAdapterFactoryProcessor;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetworkService {
 
-    private static final String BASE_URL = "http://192.168.1.18:4242";
+    private static final String BASE_URL = "http://192.168.1.54:4242";
 
     private Retrofit retrofit;
 
     public NetworkService() {
         GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create(
-                new GsonBuilder().create());
+                new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                        .registerTypeAdapterFactory(AutoValueGsonTypeAdapterFactory.create()).create());
 
         retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

@@ -55,7 +55,8 @@ public class ChatActivity extends MVPBaseActivity<ChatPresenter.View> implements
     }
 
     private void initDagger() {
-        DaggerChatComponent.builder().applicationComponent(DaggerApplicationComponent.create())
+        DaggerChatComponent.builder()
+                .applicationComponent(DaggerApplicationComponent.create())
                 .chatModule(new ChatModule())
                 .build()
                 .inject(this);
