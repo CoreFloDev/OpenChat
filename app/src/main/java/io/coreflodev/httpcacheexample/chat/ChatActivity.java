@@ -8,8 +8,11 @@ import android.widget.ImageButton;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import io.coreflodev.httpcacheexample.R;
+import io.coreflodev.httpcacheexample.chat.dagger.DaggerChatComponent;
 import io.coreflodev.httpcacheexample.common.mvp.MVPBaseActivity;
 import io.reactivex.Observable;
 import io.reactivex.android.MainThreadDisposable;
@@ -24,10 +27,14 @@ public class ChatActivity extends MVPBaseActivity<ChatPresenter.View> implements
     @BindView(R.id.ib_chat_new_message_send)
     ImageButton ivSend;
 
+    @Inject
+    ChatPresenter chatPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        initDagger();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvMessageList.setLayoutManager(linearLayoutManager);
@@ -41,10 +48,11 @@ public class ChatActivity extends MVPBaseActivity<ChatPresenter.View> implements
                 linearLayoutManager.scrollToPosition(positionStart);
             }
         });
-
-        ChatPresenter chatPresenter = new ChatPresenter();
-
         addPresenter(chatPresenter, this);
+    }
+
+    private void initDagger() {
+        DaggerChatComponent.create().inject(this);
     }
 
     @Override
