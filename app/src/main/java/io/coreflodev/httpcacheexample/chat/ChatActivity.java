@@ -63,7 +63,7 @@ public class ChatActivity extends MVPBaseActivity<ChatPresenter.View> implements
     }
 
     @Override
-    public void setInitialListOfMessage(List<ChatMessage> messages) {
+    public void setListOfMessage(List<ChatMessage> messages) {
         if (rvMessageList.getAdapter() != null) {
             ((ChatAdapter) rvMessageList.getAdapter()).addMessages(messages);
         }
@@ -88,13 +88,5 @@ public class ChatActivity extends MVPBaseActivity<ChatPresenter.View> implements
                 }
             });
         });
-    }
-
-    @Override
-    public void addNewMessage(ChatMessage chatMessage) {
-        if (rvMessageList.getAdapter() != null) {
-            ChatAdapter chatAdapter = (ChatAdapter) rvMessageList.getAdapter();
-            chatAdapter.addMessage(chatMessage);
-        }
     }
 }

@@ -3,6 +3,7 @@ package io.coreflodev.httpcacheexample.chat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.coreflodev.httpcacheexample.api.ChatMessage;
 import io.coreflodev.httpcacheexample.api.ChatService;
@@ -33,14 +34,20 @@ public class ChatPresenter extends Presenter<ChatPresenter.View> {
 
         if (messages.size() == 0) {
             oldMessagesDisposable = chatService.getMessages()
+                    .repeatWhen(o -> o.concatMap(v -> Observable.interval(3, TimeUnit.SECONDS)))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(messages -> {
-                        this.messages.addAll(messages);
-                        if (isViewAttached()) {
-                            view.setInitialListOfMessage(new ArrayList<>(messages));
+                        if (this.messages.size() != messages.size()) {
+                            this.messages.clear();
+                            this.messages.addAll(messages);
+                            if (isViewAttached()) {
+                                view.setListOfMessage(new ArrayList<>(messages));
+                            }
                         }
                     });
+        } else {
+            view.setListOfMessage(new ArrayList<>(messages));
         }
 
         if (newMessagesDisposable == null || newMessagesDisposable.isDisposed()) {
@@ -48,12 +55,7 @@ public class ChatPresenter extends Presenter<ChatPresenter.View> {
                     .flatMap(message -> chatService.addMessage(ChatMessage.create("test", message, new Date()))
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread()))
-                    .subscribe(newMessage -> {
-                        messages.add(newMessage);
-                        if (isViewAttached()) {
-                            view.addNewMessage(newMessage);
-                        }
-                    });
+                    .subscribe();
         }
     }
 
@@ -69,10 +71,8 @@ public class ChatPresenter extends Presenter<ChatPresenter.View> {
 
     public interface View extends PresenterView {
 
-        void setInitialListOfMessage(List<ChatMessage> messages);
+        void setListOfMessage(List<ChatMessage> messages);
 
         Observable<String> getNewMessage();
-
-        void addNewMessage(ChatMessage chatMessage);
     }
 }
