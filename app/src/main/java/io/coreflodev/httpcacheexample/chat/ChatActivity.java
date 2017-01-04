@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class ChatActivity extends MVPBaseActivity<ChatPresenter.View> implements
     @BindView(R.id.et_chat_new_message_content)
     EditText etMessageContent;
     @BindView(R.id.ib_chat_new_message_send)
-    ImageButton ivSend;
+    ImageView ivSend;
 
     @Inject
     ChatPresenter chatPresenter;

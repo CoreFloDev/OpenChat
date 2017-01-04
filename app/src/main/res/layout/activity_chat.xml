@@ -36,14 +36,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Message"
+            android:hint="@string/chat_message_hint"
             tools:text="test" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/ib_chat_new_message_send"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@mipmap/ic_launcher" />
+            android:padding="8dp"
+            android:clickable="true"
+            android:src="@drawable/ic_send" />
 
     </LinearLayout>
 
