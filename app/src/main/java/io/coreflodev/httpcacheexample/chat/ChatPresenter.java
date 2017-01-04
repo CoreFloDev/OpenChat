@@ -2,7 +2,6 @@ package io.coreflodev.httpcacheexample.chat;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import io.coreflodev.httpcacheexample.api.ChatMessage;
@@ -18,53 +17,53 @@ public class ChatPresenter extends Presenter<ChatPresenter.View> {
 
     private List<ChatMessage> messages;
 
-    private Disposable newMessages;
-    private Disposable oldMessages;
+    private Disposable newMessagesDisposable;
+    private Disposable oldMessagesDisposable;
 
     private ChatService chatService;
 
     public ChatPresenter(ChatService chatService) {
         this.chatService = chatService;
-        messages = new ArrayList<>();
-        messages.add(ChatMessage.create("test", "My first message", new GregorianCalendar(2016, 12, 2).getGregorianChange()));
-        messages.add(ChatMessage.create("test2", "My second message", new GregorianCalendar(2016, 12, 2).getGregorianChange()));
-        messages.add(ChatMessage.create("test", "My third message", new GregorianCalendar(2016, 12, 2).getGregorianChange()));
-        messages.add(ChatMessage.create("test4", "My last message", new GregorianCalendar(2016, 12, 2).getGregorianChange()));
+        this.messages = new ArrayList<>();
     }
 
     @Override
     public void attachView(View view) {
         super.attachView(view);
 
-        oldMessages = chatService.getMessages()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(messages -> {
-                    this.messages = messages;
-                    if (isViewAttached()) {
-                        view.setInitialListOfMessage(new ArrayList<>(messages));
-                    }
-                });
+        if (messages.size() == 0) {
+            oldMessagesDisposable = chatService.getMessages()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(messages -> {
+                        this.messages.addAll(messages);
+                        if (isViewAttached()) {
+                            view.setInitialListOfMessage(new ArrayList<>(messages));
+                        }
+                    });
+        }
 
-        newMessages = view.getNewMessage()
-                .flatMap(message -> chatService.addMessage(ChatMessage.create("test", message, new Date()))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread()))
-                .subscribe(newMessage -> {
-                    messages.add(newMessage);
-                    if (isViewAttached()) {
-                        view.addNewMessage(newMessage);
-                    }
-                });
+        if (newMessagesDisposable == null || newMessagesDisposable.isDisposed()) {
+            newMessagesDisposable = view.getNewMessage()
+                    .flatMap(message -> chatService.addMessage(ChatMessage.create("test", message, new Date()))
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread()))
+                    .subscribe(newMessage -> {
+                        messages.add(newMessage);
+                        if (isViewAttached()) {
+                            view.addNewMessage(newMessage);
+                        }
+                    });
+        }
     }
 
     @Override
     public void destroy() {
-        if (newMessages != null && !newMessages.isDisposed()) {
-            newMessages.dispose();
+        if (newMessagesDisposable != null && !newMessagesDisposable.isDisposed()) {
+            newMessagesDisposable.dispose();
         }
-        if (oldMessages != null && !oldMessages.isDisposed()) {
-            oldMessages.dispose();
+        if (oldMessagesDisposable != null && !oldMessagesDisposable.isDisposed()) {
+            oldMessagesDisposable.dispose();
         }
     }
 
