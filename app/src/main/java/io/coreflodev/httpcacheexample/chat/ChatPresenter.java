@@ -42,16 +42,16 @@ public class ChatPresenter extends Presenter<ChatPresenter.View> {
                             this.messages.clear();
                             this.messages.addAll(messages);
                             if (isViewAttached()) {
-                                view.setListOfMessage(new ArrayList<>(messages));
+                                getView().setListOfMessage(new ArrayList<>(messages));
                             }
                         }
                     });
         } else {
-            view.setListOfMessage(new ArrayList<>(messages));
+            getView().setListOfMessage(new ArrayList<>(messages));
         }
 
         if (newMessagesDisposable == null || newMessagesDisposable.isDisposed()) {
-            newMessagesDisposable = view.getNewMessage()
+            newMessagesDisposable = getView().getNewMessage()
                     .flatMap(message -> chatService.addMessage(ChatMessage.create("test", message, new Date()))
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread()))
@@ -60,10 +60,15 @@ public class ChatPresenter extends Presenter<ChatPresenter.View> {
     }
 
     @Override
-    public void destroy() {
+    public void detachView() {
         if (newMessagesDisposable != null && !newMessagesDisposable.isDisposed()) {
             newMessagesDisposable.dispose();
         }
+        super.detachView();
+    }
+
+    @Override
+    public void destroy() {
         if (oldMessagesDisposable != null && !oldMessagesDisposable.isDisposed()) {
             oldMessagesDisposable.dispose();
         }

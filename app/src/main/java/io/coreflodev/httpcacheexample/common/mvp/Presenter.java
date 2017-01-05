@@ -12,6 +12,10 @@ public abstract class Presenter<T extends PresenterView> {
         return view != null;
     }
 
+    public T getView() {
+        return view;
+    }
+
     public void detachView() {
         view = null;
     }
