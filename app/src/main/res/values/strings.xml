@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">HttpCacheExample</string>
+    <string name="app_name">OpenChat</string>
     <string name="chat_message_hint">Message</string>
 </resources>
