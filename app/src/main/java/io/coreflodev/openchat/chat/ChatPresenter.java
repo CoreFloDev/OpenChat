@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.coreflodev.openchat.api.ChatMessage;
 import io.coreflodev.openchat.api.ChatService;
+import io.coreflodev.openchat.chat.repository.ChatRepository;
 import io.coreflodev.openchat.common.mvp.Presenter;
 import io.coreflodev.openchat.common.mvp.PresenterView;
 import io.reactivex.Observable;
@@ -22,9 +23,11 @@ public class ChatPresenter extends Presenter<ChatPresenter.View> {
     private Disposable oldMessagesDisposable;
 
     private ChatService chatService;
+    private ChatRepository chatRepository;
 
-    public ChatPresenter(ChatService chatService) {
+    public ChatPresenter(ChatService chatService, ChatRepository chatRepository) {
         this.chatService = chatService;
+        this.chatRepository = chatRepository;
         this.messages = new ArrayList<>();
     }
 
@@ -39,8 +42,17 @@ public class ChatPresenter extends Presenter<ChatPresenter.View> {
                     .subscribeOn(Schedulers.io())
                     .subscribe(messages -> {
                         if (this.messages.size() != messages.size()) {
+                            chatRepository.save(messages);
                             this.messages.clear();
                             this.messages.addAll(messages);
+                            if (isViewAttached()) {
+                                getView().setListOfMessage(new ArrayList<>(messages));
+                            }
+                        }
+                    }, error -> {
+                        List<ChatMessage> stored = chatRepository.read();
+                        if (stored != null) {
+                            messages = stored;
                             if (isViewAttached()) {
                                 getView().setListOfMessage(new ArrayList<>(messages));
                             }
