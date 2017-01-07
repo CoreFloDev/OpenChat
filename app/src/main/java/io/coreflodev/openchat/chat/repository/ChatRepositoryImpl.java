@@ -14,7 +14,6 @@ import io.coreflodev.openchat.common.network.AutoValueGsonTypeAdapterFactory;
 
 public class ChatRepositoryImpl implements ChatRepository {
 
-
     private static final String KEY_CHAT_MESSAGES = "KEY_CHAT_MESSAGES";
 
     private SharedPreferences sharedPreferences;
