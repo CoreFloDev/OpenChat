@@ -1,5 +1,7 @@
 package io.coreflodev.openchat.common.dagger;
 
+import android.content.Context;
+
 import dagger.Component;
 import io.coreflodev.openchat.api.ChatService;
 
@@ -8,4 +10,6 @@ import io.coreflodev.openchat.api.ChatService;
 public interface ApplicationComponent {
 
     ChatService chatService();
+
+    Context context();
 }
