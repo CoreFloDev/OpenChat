@@ -16,6 +16,7 @@ import java.util.List;
 import io.coreflodev.openchat.RxPluginTestRule;
 import io.coreflodev.openchat.api.ChatMessage;
 import io.coreflodev.openchat.api.ChatService;
+import io.coreflodev.openchat.chat.repository.ChatRepository;
 import io.reactivex.Observable;
 
 import static org.junit.Assert.assertEquals;
@@ -33,6 +34,8 @@ public class ChatPresenterTest {
 
     @Mock
     ChatService chatServiceMock;
+    @Mock
+    ChatRepository chatRepositoryMock;
     @Mock
     ChatPresenter.View chatPresenterViewMock;
     @Mock
@@ -54,7 +57,7 @@ public class ChatPresenterTest {
         testMessages.add(ChatMessage.create("test2", "message2", new Date()));
         testMessageString = "testMessageString";
 
-        chatPresenter = new ChatPresenter(chatServiceMock);
+        chatPresenter = new ChatPresenter(chatServiceMock, chatRepositoryMock);
     }
 
     @Test
@@ -69,6 +72,7 @@ public class ChatPresenterTest {
         for (int i = 0; i < testMessages.size(); i++) {
             assertEquals(listChatMessageCaptor.getValue().get(i).toString(), testMessages.get(i).toString());
         }
+        verify(chatRepositoryMock).save(listChatMessageCaptor.getValue());
 
         ChatMessage messageSend = chatMessageCaptor.getValue();
         assertEquals(messageSend.pseudo(), "test");
