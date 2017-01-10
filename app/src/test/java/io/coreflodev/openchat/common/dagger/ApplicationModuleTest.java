@@ -1,5 +1,7 @@
 package io.coreflodev.openchat.common.dagger;
 
+import android.content.Context;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,12 +22,15 @@ public class ApplicationModuleTest {
     NetworkService networkServiceMock;
     @Mock
     ChatService chatServiceMock;
+    @Mock
+    Context contextMock;
 
     private ApplicationModule applicationModule;
 
     @Before
     public void setup() {
-        applicationModule = new ApplicationModule();
+        when(contextMock.getApplicationContext()).thenReturn(contextMock);
+        applicationModule = new ApplicationModule(contextMock);
     }
 
     @Test
@@ -37,5 +42,10 @@ public class ApplicationModuleTest {
     public void testProvideChatServices() {
         when(networkServiceMock.createService(ChatService.class)).thenReturn(chatServiceMock);
         assertEquals(chatServiceMock, applicationModule.provideChatService(networkServiceMock));
+    }
+
+    @Test
+    public void testContext() {
+        assertEquals(contextMock, applicationModule.provideContext());
     }
 }
