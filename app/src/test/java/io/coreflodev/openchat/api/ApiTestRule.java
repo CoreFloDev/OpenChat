@@ -1,25 +1,35 @@
 package io.coreflodev.openchat.api;
 
-import com.google.gson.GsonBuilder;
+import android.content.Context;
+
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-import io.coreflodev.openchat.common.network.AutoValueGsonTypeAdapterFactory;
+import java.io.File;
+
+import io.coreflodev.openchat.common.network.GsonService;
+import io.coreflodev.openchat.common.network.HttpService;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ApiTestRule implements TestRule {
+
+    private Context context;
 
     private MockWebServer server;
     private Retrofit retrofit;
 
     public ApiTestRule() {
         server = new MockWebServer();
+        context = mock(Context.class);
+        when(context.getCacheDir()).thenReturn(new File(""));
     }
 
     @Override
@@ -29,14 +39,11 @@ public class ApiTestRule implements TestRule {
             public void evaluate() throws Throwable {
                 server.start();
 
-                GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create(
-                        new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                                .registerTypeAdapterFactory(AutoValueGsonTypeAdapterFactory.create()).create());
-
                 retrofit = new Retrofit.Builder()
                         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                        .addConverterFactory(gsonConverterFactory)
+                        .addConverterFactory(new GsonService().getGsonConverterFactory())
                         .baseUrl(server.url("").toString())
+                        .client(new HttpService(context).getHttpClient())
                         .build();
 
                 base.evaluate();

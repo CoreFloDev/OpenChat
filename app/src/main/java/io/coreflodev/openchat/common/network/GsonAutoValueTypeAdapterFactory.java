@@ -4,9 +4,9 @@ import com.google.gson.TypeAdapterFactory;
 import com.ryanharter.auto.value.gson.GsonTypeAdapterFactory;
 
 @GsonTypeAdapterFactory
-public abstract class AutoValueGsonTypeAdapterFactory implements TypeAdapterFactory {
+public abstract class GsonAutoValueTypeAdapterFactory implements TypeAdapterFactory {
 
     public static TypeAdapterFactory create() {
-        return new AutoValueGson_AutoValueGsonTypeAdapterFactory();
+        return new AutoValueGson_GsonAutoValueTypeAdapterFactory();
     }
 }
