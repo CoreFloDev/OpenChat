@@ -44,4 +44,14 @@ public class ApplicationModuleTest {
         when(networkServiceMock.createService(ChatService.class)).thenReturn(chatServiceMock);
         assertEquals(chatServiceMock, applicationModule.provideChatService(networkServiceMock));
     }
+
+    @Test
+    public void testProvideOkHttpClient() {
+        assertNotNull(applicationModule.provideOkHttpClient());
+    }
+
+    @Test
+    public void testProvideGsonConverterFactory() {
+        assertNotNull(applicationModule.provideGsonConverterFactory());
+    }
 }
