@@ -2,6 +2,7 @@ package io.coreflodev.openchat.api;
 
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.GregorianCalendar;
@@ -11,8 +12,8 @@ import static org.junit.Assert.assertEquals;
 
 public class ChatServiceTest {
 
-    @ClassRule
-    public static ApiTestRule apiTestRule = new ApiTestRule();
+    @Rule
+    public ApiTestRule apiTestRule = new ApiTestRule();
 
     private ChatService chatService;
 
@@ -22,7 +23,7 @@ public class ChatServiceTest {
     }
 
     @Test
-    public void testGetMessages() {
+    public void testGetMessages() throws Throwable {
         apiTestRule.enqueue("[" +
                 "  {" +
                 "    \"pseudo\": \"test\"," +
@@ -35,6 +36,13 @@ public class ChatServiceTest {
         assertEquals(chatMessages.get(0).pseudo(), "test");
         assertEquals(chatMessages.get(0).message(), "message from server");
         GregorianCalendar expectedDate = new GregorianCalendar(2017, 0, 6, 14, 57, 33);
+        assertEquals(chatMessages.get(0).date().toString(), expectedDate.getTime().toString());
+
+        apiTestRule.stopServerForOfflineTest();
+        chatMessages = chatService.getMessages().blockingFirst();
+        assertEquals(chatMessages.size(), 1);
+        assertEquals(chatMessages.get(0).pseudo(), "test");
+        assertEquals(chatMessages.get(0).message(), "message from server");
         assertEquals(chatMessages.get(0).date().toString(), expectedDate.getTime().toString());
     }
 

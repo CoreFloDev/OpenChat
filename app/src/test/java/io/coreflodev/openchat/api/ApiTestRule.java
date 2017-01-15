@@ -28,8 +28,9 @@ public class ApiTestRule implements TestRule {
 
     public ApiTestRule() {
         server = new MockWebServer();
+
         context = mock(Context.class);
-        when(context.getCacheDir()).thenReturn(new File(""));
+        when(context.getCacheDir()).thenReturn(new File("src/test/resources"));
     }
 
     @Override
@@ -49,9 +50,12 @@ public class ApiTestRule implements TestRule {
                 base.evaluate();
 
                 server.shutdown();
-
             }
         };
+    }
+
+    public void stopServerForOfflineTest() throws Throwable {
+        server.shutdown();
     }
 
     public <T> T create(Class<T> service) {
