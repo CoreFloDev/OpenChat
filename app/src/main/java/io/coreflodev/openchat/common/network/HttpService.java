@@ -3,7 +3,6 @@ package io.coreflodev.openchat.common.network;
 import android.content.Context;
 
 import java.io.File;
-import java.net.ConnectException;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
@@ -26,7 +25,7 @@ public class HttpService {
                 .addInterceptor(chain -> {
                     try {
                         return chain.proceed(chain.request());
-                    } catch (ConnectException e) {
+                    } catch (Exception e) {
                         Request offlineRequest = chain.request().newBuilder()
                                 .header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24)
                                 .build();

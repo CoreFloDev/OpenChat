@@ -42,8 +42,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatMessageVie
         int oldSize = messages.size();
         messages.clear();
         messages.addAll(chatMessages);
-        notifyItemRangeChanged(0, oldSize);
-        notifyItemRangeInserted(oldSize, chatMessages.size());
+        if (oldSize < chatMessages.size()) {
+            notifyItemRangeChanged(0, oldSize);
+            notifyItemRangeInserted(oldSize, chatMessages.size());
+        } else {
+            notifyItemRangeRemoved(0, oldSize);
+            notifyItemRangeInserted(0, chatMessages.size());
+        }
     }
 
     @Override
