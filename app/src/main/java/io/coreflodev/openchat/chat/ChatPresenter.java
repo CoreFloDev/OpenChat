@@ -1,5 +1,7 @@
 package io.coreflodev.openchat.chat;
 
+import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,6 +47,8 @@ public class ChatPresenter extends Presenter<ChatPresenter.View> {
                                 getView().setListOfMessage(new ArrayList<>(messages));
                             }
                         }
+                    }, error -> {
+                        // TODO handle offline mode with no cache
                     });
         } else {
             getView().setListOfMessage(new ArrayList<>(messages));
