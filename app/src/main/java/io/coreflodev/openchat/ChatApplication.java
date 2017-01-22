@@ -6,6 +6,7 @@ import io.coreflodev.openchat.chat.dagger.ChatComponent;
 import io.coreflodev.openchat.chat.dagger.ChatModule;
 import io.coreflodev.openchat.chat.dagger.DaggerChatComponent;
 import io.coreflodev.openchat.common.dagger.ApplicationComponent;
+import io.coreflodev.openchat.common.dagger.ApplicationModule;
 import io.coreflodev.openchat.common.dagger.DaggerApplicationComponent;
 
 public class ChatApplication extends Application {
@@ -14,7 +15,9 @@ public class ChatApplication extends Application {
     private ChatComponent chatComponent;
 
     public ChatApplication() {
-        this.applicationComponent = DaggerApplicationComponent.create();
+        this.applicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(this))
+                .build();
         this.chatComponent = DaggerChatComponent.builder()
                 .applicationComponent(applicationComponent)
                 .chatModule(new ChatModule())
